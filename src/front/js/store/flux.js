@@ -3,8 +3,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 		store: {
 			message: null,
 			demo: [
-				{
-					title: "FIRST",
+				{title: "FIRST",
 					background: "white",
 					initial: "white"
 				},
@@ -48,6 +47,21 @@ const getState = ({ getStore, getActions, setStore }) => {
 				//reset the global store
 				setStore({ demo: demo });
 			}
+
+			/* postContacts: async () => {
+				const uri = `${}`
+				const options = {
+					method: 'POST'
+				}
+				const response = await fetch(uri, options)
+				if (!response.ok) {
+					console.log('Error: ', response.status, response.statusText)
+					return
+				}
+				const data = await response.json()
+				console.log('Data is = ', data);
+				postContacts(data.results)
+			} */
 		}
 	};
 };
