@@ -1,6 +1,24 @@
-import React from "react";
+import React, { useState, useContext } from "react";
 
 export const NewContactForm = () => {
+//STATE
+const[ formData, setFormData ] = useState({
+  fullName: '',
+  email: '',
+  phone: '',
+  address: '',
+})
+
+//HANDLER
+  const handleChange = (event) => {
+    const {name, value} = event.target //destructure the name value from the targeted event. 
+    setForm({
+      ...form,//keep the current state of form
+      [name]: value //[is an object literal]
+    })
+    }
+
+
   return (
     <div className="container align-items-center">
 
@@ -10,7 +28,7 @@ export const NewContactForm = () => {
           <label for="fullName" className="form-label">
             full Name
           </label>
-          <input type="text" id="fullName" className="form-control" />
+          <input type="text" id="fullName" className="form-control" value={formData.fullName} onChange={handleChange} />
         </div>
 
         <div className="row mb-2">

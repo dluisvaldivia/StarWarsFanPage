@@ -1,11 +1,17 @@
 import React from "react";
 
-
 export const Footer = () => (
-	<footer className="footer mt-auto py-3 text-center">
-		<p>
-			Made with <i className="fa fa-heart text-danger" /> by{" "}
-			<a href="http://www.4geeksacademy.com" target='blank'>4Geeks Academy</a>
-		</p>
-	</footer>
+  <footer className="footer mt-auto pb-3 text-center bg-gradient bg-dark text-white">
+	<p>
+      Made By{" "}
+      <a href="https://github.com/dluisvaldivia" target="_blank" rel="noopener noreferrer">
+        dluisvaldivia
+      </a>
+    </p>
+      <img
+        src="/* INSERT REBELLION WING */"
+        alt="rebellion logo"
+        className="footer-icon"
+      />
+  </footer>
 );
