@@ -1,7 +1,10 @@
-import React, { useState, } from "react";
+import React, { useState, useContext } from "react";
+import { Context } from "../store/appContext";
 
 export const NewContactForm = () => {
+
 //STATE
+const { actions } = useContext(Context);
 
 const[ formData, setFormData ] = useState({
   fullName: '',
@@ -10,13 +13,17 @@ const[ formData, setFormData ] = useState({
   address: '',
 })
 
-//HANDLER
+//form HANDLER
   const handleChange = (event) => {
-    const {name, value} = event.target //destructure the name value from the targeted event. 
-    setForm({
-      ...form,//keep the current state of form
-      [name]: value //[is an object literal]
+    const {name, value} = event.target  //destructure the name value from the targeted event. 
+    setFormData({
+      ...formData,                          //keep the current state of form
+      [name]: value                     //[is an object literal]
     })
+    }
+//SUBMIT HANDLER
+    const handleSubmit = (data) => {
+      actions.postContact(data)
     }
 
 
@@ -25,37 +32,38 @@ const[ formData, setFormData ] = useState({
 
       <form>
         <h1> Add contact</h1>
+
         <div className="row mb-2">
-          <label for="fullName" className="form-label">
+          <label htmlFor="fullName" className="form-label">
             full Name
           </label>
-          <input type="text" id="fullName" className="form-control" value={formData.fullName} onChange={handleChange} />
+          <input type="text" id="fullName" className="form-control" name="fullName" onChange={handleChange}  />
         </div>
 
         <div className="row mb-2">
-          <label for="emailAddress" className="form-label">
+          <label htmlFor="emailAddress" className="form-label">
             Email Address
           </label>
-          <input type="email" id="emailAddress" className="form-control" />
+          <input type="email" id="emailAddress" className="form-control" name="email" onChange={handleChange}/>
         </div>
 
         <div className="row mb-2">
-          <label for="phone" className="form-label">
+          <label htmlFor="phone" className="form-label">
             phone
           </label>
-          <input type="number" id="phone" className="form-control" />
+          <input type="number" id="phone" className="form-control" name="phone" onChange={handleChange}/>
         </div>
 
         <div className="row mb-2">
-          <label for="address" className="form-label">
+          <label htmlFor="address" className="form-label">
             Address
           </label>
-          <input type="text" id="address" className="form-control" />
+          <input type="text" id="address" className="form-control"name="address" onChange={handleChange} />
         </div>
-
+        {/* BUTTONS */}
         <div className="row mb-2">
           <div className="col">
-            <button className="btn btn-success me-2" type="button">
+            <button className="btn btn-success me-2" type="button" onClick={handleSubmit}>
               Save
             </button>
             <span>
