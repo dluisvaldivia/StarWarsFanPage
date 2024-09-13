@@ -15,6 +15,7 @@ import { Contacts } from "./pages/Contacts.jsx"
 import { NewContactForm } from "./pages/NewContactForm.jsx";
 import { Page404 } from "./pages/Page404.jsx";
 import { Login } from "./pages/Login.jsx";
+import { Characters } from "./pages/Characters.jsx";
 
 //Create your first component
 const Layout = () => {
@@ -39,7 +40,7 @@ const Layout = () => {
                         <Route element={<Demo />} path="/demo" />
                         <Route element={<Single />} path="/single/:theid" />
                         <Route element={<Page404 />} path='/*' />
-
+                        <Route element={<Characters />} path="/characters" />
                     </Routes>
                 
                     <Footer />

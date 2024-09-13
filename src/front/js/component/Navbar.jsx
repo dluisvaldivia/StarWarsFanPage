@@ -25,7 +25,7 @@ export const Navbar = () => {
 						<button className="btn btn-info bg-gradient me-2" type="button">Planets</button>
 					</Link>
 					<Link to="/login">
-						<button className="btn btn-info bg-gradient" type="button">Login</button>
+						<button className="btn btn-info bg-gradient me-2" type="button">Login</button>
 					</Link>
 					<Link to="/">
 						<button className="btn btn-info bg-gradient" type="button">Favourites</button>

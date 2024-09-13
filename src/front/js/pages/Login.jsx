@@ -3,47 +3,20 @@ import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
-  const {actions} = useContext(Context)
+  const { actions } = useContext(Context);
   const [createUser, setCreateUser] = useState("");
   const [getUser, setGetUser] = useState("");
   const navigate = useNavigate();
 
-  const handleCreateValue = async (event) => {
-    setCreateUser(event.target.value);
-  };
-  const handleLoginValue = async (event) => {
-    setGetUser(event.target.value);
-  };
+  const handleCreateValue = async (event) => { setCreateUser(event.target.value); };
+  const handleLoginValue = async (event) => { setGetUser(event.target.value); };
 
-  const handleCreate = async (event) => {
-    event.preventDefault();
-    const agendaData = {
-      slug: createUser,
-    };
-    try {
-      await actions.postAgenda(agendaData);
-      await actions.setUsername(createUser);
-      navigate("/contacts");
-
-    }
-    catch (error){
-      console.error("OH NO!: ", error)
-    }
+  const handleCreate = async () => {actions.postAgenda(createUser);
+    navigate("/contacts");
   };
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
-    const agendaData = {
-      slug: getUser,
-    };
-    try {
-      await actions.getAgenda(agendaData)
-      actions.setUsername(getUser);
-      navigate("/contacts");
-
-    }
-    catch (error){
-      console.error("OH NO!: ", error)}
+  const handleLogin = async () => {actions.getAgenda(getUser);
+    navigate("/contacts");
   };
 
   return (
@@ -53,48 +26,44 @@ export const Login = () => {
           <h1>Log-in page</h1>
           {/* NEW USER */}
           <div className="row">
-            <label className="mb-1" htmlFor="newUserName">
-              New user
-            </label>
-            <input
-              className="mb-1"
+            <label className="mb-1" htmlFor="newUserName"> New user </label>
+            <input className="mb-1"
               id="newUserName"
               value={createUser}
               placeholder="Enter a new user name"
-              onChange={handleCreateValue}
-            ></input>
+              onChange={handleCreateValue}>
+            </input>
 
             <div className="col">
               <button
                 className="btn btn-info"
-                type="submit"
+                type="button"
                 disabled={!createUser.trim()}
-                onClick={handleCreate}
-              >
-                Create
+                onClick={handleCreate}>
+                Create 
               </button>
             </div>
           </div>
+
           {/* LOGIN EXISTING USER */}
           <div className="row">
             <label className="mb-1" htmlFor="getUserName">
               login with your existing user name
-            </label>
+            </label>  
             <input
               className="mb-1"
               id="getUserName"
               value={getUser}
               placeholder="enter an existing user name"
-              onChange={handleLoginValue}
-            ></input>
+              onChange={handleLoginValue}>   
+            </input>
 
             <div className="col">
               <button
                 className="btn btn-info"
-                type="submit"
+                type="button"
                 disabled={!getUser.trim()}
-                onClick={handleLogin}
-              >
+                onClick={handleLogin}>
                 Login
               </button>
             </div>
