@@ -9,3 +9,12 @@
   max-height: 20px; 
   object-fit: contain; 
 }
+
+img {
+  max-width: 85%;
+  height: auto;
+}
+
+ul {
+  list-style-type: none;
+}

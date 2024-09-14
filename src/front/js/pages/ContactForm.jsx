@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
 
-export const NewContactForm = () => {
+export const ContactForm = () => {
 const { actions } = useContext(Context);
 const navigate = useNavigate();
 const [ name, setName ] = useState('');
@@ -12,15 +12,14 @@ const [ address, setAddress ] = useState('');
 
 
 //SUBMIT HANDLER
-const handleSave = (event) => {
-  event.preventDefault();
+const handleSave = () => {
   const dataToSend = {
       name: name,
       phone: phone,
       email: email,
       address: address
   }
-  actions.postContact(dataToSend);
+  actions.postContact({dataToSend});
   navigate("/contacts");
 }
   
