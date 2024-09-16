@@ -18,8 +18,8 @@ export const Navbar = () => {
 					<Link to="/characters">
 						<button className="btn btn-info bg-gradient me-2" type="button">Characters</button>
 					</Link>
-					<Link to="/films">
-						<button className="btn btn-info bg-gradient me-2" type="button">Films</button>
+					<Link to="/vehicles">
+						<button className="btn btn-info bg-gradient me-2" type="button">Vehicles</button>
 					</Link>
 					<Link to="/planets">
 						<button className="btn btn-info bg-gradient me-2" type="button">Planets</button>

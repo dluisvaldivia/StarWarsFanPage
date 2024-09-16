@@ -4,9 +4,12 @@ const getState = ({ getStore, getActions, setStore }) => {
       message: null,
       host: "https://playground.4geeks.com/contact/agendas",
       hostSW: 'https://swapi.tech/api',
+      hostSWImages: "https://starwars-visualguide.com/assets/img",
       contacts: [],
       currentContact: [],
       characters: [],
+      vehicles: [],
+      planets: [],
       slug: "Danny"
     },
     actions: {
@@ -67,8 +70,40 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return;
 				}
 				await getActions().getContacts();
-			}
+			},
+      
+      getCharacters: async () => {
+				const uri = `${getStore().hostSW}/people`;
+				const response = await fetch(uri);
+				if (!response.ok) {
+					console.log('Error: ', response.status, response.statusText);
+					return;
+				};
+				const data = await response.json();
+				setStore({ characters: data.results })
+			},
+      getVehicles: async () => {
+				const uri = `${getStore().hostSW}/vehicles`;
+				const response = await fetch(uri);
+				if (!response.ok) {
+					console.log('Error: ', response.status, response.statusText);
+					return;
+				};
+				const data = await response.json();
+				setStore({ vehicles: data.results })
+			},
+      getPlanets: async () => {
+				const uri = `${getStore().hostSW}/planets`;
+				const response = await fetch(uri);
+				if (!response.ok) {
+					console.log('Error: ', response.status, response.statusText);
+					return;
+				};
+				const data = await response.json();
+				setStore({ planets: data.results })
+			},
+      }
   }
 }
-}
+
 export default getState
