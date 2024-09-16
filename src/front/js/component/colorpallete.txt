@@ -1,6 +1,6 @@
 
 .bg-body-tertiary <<<< lightest grey
-.bg-dark-subtle <<<< light grey
+bg-dark-subtle <<<< light grey
 .bg-info.bg-gradient <<< light blue
 .bg-secondary.bg-gradient <<<< dark grey
 .bg-dark.bg-gradient <<< darker grey

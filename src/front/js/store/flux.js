@@ -10,6 +10,7 @@ const getState = ({ getStore, getActions, setStore }) => {
       characters: [],
       vehicles: [],
       planets: [],
+      favorites: [],
       slug: "Danny"
     },
     actions: {
@@ -22,42 +23,44 @@ const getState = ({ getStore, getActions, setStore }) => {
         const response = await fetch(uri, options);
         if (!response.ok) {
           console.log("Error: ", response.status, response.statusText);
-          return false;}
+          return false;
+        }
         const data = await response.json()
         console.log(data)
-        setStore({agenda: slug, username: slug, contacts: data.contacts})
+        setStore({ agenda: slug, username: slug, contacts: data.contacts })
       },
 
-      postContact: async ({dataToSend}) => {
+      postContact: async ({ dataToSend }) => {
         const uri = `${getStore().host}/Danny/contacts`
         const options = {
           method: "POST",
-          headers: { 'Content-Type': 'application/json'  },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(dataToSend)
         }
         const response = await fetch(uri, options);
         if (!response.ok) {
           console.log("Error: ", response.status, response.statusText);
-          return false;}
-          const data = await response.json()
+          return false;
+        }
+        const data = await response.json()
         console.log(data)
         getActions().getContacts();
       },
-      
+
       editContact: async (item, dataToSend) => {
-				const uri = `${getStore().host}/Danny/contacts/${item.id}`;
-				const options = {
-					method: 'PUT',
-					headers: {"Content-Type": "application/json"},
-					body: JSON.stringify(dataToSend)
-				};
-				const response = await fetch(uri, options);
-				if (!response.ok) {
-					console.log('Error: ', response.status, response.statusText);
-					return;
-				}
-				getActions().getContacts();
-			},
+        const uri = `${getStore().host}/Danny/contacts/${item.id}`;
+        const options = {
+          method: 'PUT',
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(dataToSend)
+        };
+        const response = await fetch(uri, options);
+        if (!response.ok) {
+          console.log('Error: ', response.status, response.statusText);
+          return;
+        }
+        getActions().getContacts();
+      },
 
       deleteContact: async (item) => {
         const uri = `${getStore().host}/Danny/contacts/${item.id}`;
@@ -65,45 +68,57 @@ const getState = ({ getStore, getActions, setStore }) => {
           method: "DELETE",
         }
         const response = await fetch(uri, options);
-				if (!response.ok) {
-					console.log('Error: ', response.status, response.statusText);
-					return;
-				}
-				await getActions().getContacts();
-			},
-      
+        if (!response.ok) {
+          console.log('Error: ', response.status, response.statusText);
+          return;
+        }
+        await getActions().getContacts();
+      },
+
       getCharacters: async () => {
-				const uri = `${getStore().hostSW}/people`;
-				const response = await fetch(uri);
-				if (!response.ok) {
-					console.log('Error: ', response.status, response.statusText);
-					return;
-				};
-				const data = await response.json();
-				setStore({ characters: data.results })
-			},
+        const uri = `${getStore().hostSW}/people`;
+        const response = await fetch(uri);
+        if (!response.ok) {
+          console.log('Error: ', response.status, response.statusText);
+          return;
+        };
+        const data = await response.json();
+        setStore({ characters: data.results })
+      },
       getVehicles: async () => {
-				const uri = `${getStore().hostSW}/vehicles`;
-				const response = await fetch(uri);
-				if (!response.ok) {
-					console.log('Error: ', response.status, response.statusText);
-					return;
-				};
-				const data = await response.json();
-				setStore({ vehicles: data.results })
-			},
+        const uri = `${getStore().hostSW}/vehicles`;
+        const response = await fetch(uri);
+        if (!response.ok) {
+          console.log('Error: ', response.status, response.statusText);
+          return;
+        };
+        const data = await response.json();
+        setStore({ vehicles: data.results })
+      },
       getPlanets: async () => {
-				const uri = `${getStore().hostSW}/planets`;
-				const response = await fetch(uri);
-				if (!response.ok) {
-					console.log('Error: ', response.status, response.statusText);
-					return;
-				};
-				const data = await response.json();
-				setStore({ planets: data.results })
-			},
+        const uri = `${getStore().hostSW}/planets`;
+        const response = await fetch(uri);
+        if (!response.ok) {
+          console.log('Error: ', response.status, response.statusText);
+          return;
+        };
+        const data = await response.json();
+        setStore({ planets: data.results })
+      },
+      addToFavorites: (item) => {
+        const store = getStore();
+        if (!store.favorites.find(fav => fav.uid === item.uid && fav.type === item.type)) {
+          setStore({ favorites: [...store.favorites, item] });
+        }
+      },
+      removeFromFavorites: (item) => {
+        const store = getStore();
+        const updatedFavorites = store.favorites.filter(fav => !(fav.uid === item.uid && fav.type === item.type));
+        setStore({ favorites: updatedFavorites });
       }
+    }
   }
 }
+
 
 export default getState

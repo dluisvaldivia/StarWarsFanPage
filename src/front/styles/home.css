@@ -6,7 +6,7 @@
 
 .footer-icon {
   max-width: 100%;
-  max-height: 20px; 
+  max-height: 25px; 
   object-fit: contain; 
 }
 
@@ -17,4 +17,11 @@ img {
 
 ul {
   list-style-type: none;
+}
+
+html, body {
+  background-color: #000000; /* Set your preferred color */
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
