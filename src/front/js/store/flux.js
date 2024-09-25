@@ -23,7 +23,8 @@ const getState = ({ getStore, getActions, setStore }) => {
         const response = await fetch(uri, options);
         if (!response.ok) {
           console.log("Error: ", response.status, response.statusText);
-          return false;
+          await fetch(uri, { method: 'POST' })
+          return getContacts(slug);
         }
         const data = await response.json()
         console.log(data)
