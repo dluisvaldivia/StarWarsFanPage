@@ -74,6 +74,38 @@ def post(id):
         response_body['results'] = {}
         return response_body, 200
     if request.method == 'DELETE':
+
         response_body['message'] = f'Publicación: {id} eliminada - (DELETE)'
         response_body['results'] = {}
         return response_body, 200
+
+@api.route('/medias', methods=['GET', 'POST'])
+@api.route('/medias/<int:id>', methods=['GET', 'PUT', 'DELETE'])
+
+@api.route('/comments', methods=['GET', 'POST'])
+def comments():
+    response_body = {}
+    if request.method == 'GET':
+        rows = db.session.execute(db.select(comments)).scalars()
+        result = [row.serialize() for row in rows]
+        response_body['message'] = 'listado de mensajes (GET)'
+        response_body['results'] = result
+@api.route('/comments/<int:id>', methods=['GET', 'PUT', 'DELETE'])
+
+@api.route('/followers', methods=['GET', 'POST'])
+@api.route('/followers/<int:id>', methods=['GET', 'PUT', 'DELETE'])
+
+@api.route('/following', methods=['GET', 'POST'])
+@api.route('/following/<int:id>', methods=['GET', 'PUT', 'DELETE'])
+
+@api.route('/planets', methods=['GET', 'POST'])
+@api.route('/planets/<int:id>', methods=['GET', 'PUT', 'DELETE'])
+
+@api.route('/characters', methods=['GET', 'POST'])
+@api.route('/characters/<int:id>', methods=['GET', 'PUT', 'DELETE'])
+
+@api.route('/character-favorites', methods=['GET', 'POST'])
+@api.route('/character-favorites/<int:id>', methods=['GET', 'PUT', 'DELETE'])
+
+@api.route('/planet-favorites', methods=['GET', 'POST'])
+@api.route('/planet-favorites/<int:id>', methods=['GET', 'PUT', 'DELETE'])
