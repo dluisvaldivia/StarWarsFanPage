@@ -35,12 +35,6 @@ def posts():
     response_body = {}
     if request.method == 'GET':
         rows = db.session.execute(db.select(Posts)).scalars()
-        # Opción 2
-        # result = []
-        # for row in rows:
-        #    result.append(row.serialize())
-        # Opción 1 - list comprehension
-        # var  = [ objetivo for iterador in lista ]
         result = [row.serialize() for row in rows]
         response_body['message'] = 'Listado de todas las Publicaciones (GET)'
         response_body['results'] = result
@@ -53,7 +47,7 @@ def posts():
                     body = data.get('body'),
                     date = datetime.now(),
                     image_url = data.get('image_url'),
-                    user_id = data.get('user_id'),)
+                    user_id = data.get('user_id'))
         db.session.add(row)
         db.session.commit()
         response_body['message'] = 'Creando una Publicación (POST)'
@@ -64,48 +58,57 @@ def posts():
 @api.route('/posts/<int:id>', methods=['GET', 'PUT', 'DELETE'])
 def post(id):
     response_body = {}
-    # validar que id exista en la base de datos
+    row = db.session.execute(db.select(Posts).where(Posts.id == id)).scalar()
+    if not row:
+        response_body['message'] = f'La publicacion: {id} no existe'
+        response_body['results'] = {}
+        return response_body, 404
     if request.method == 'GET':
         response_body['message'] = f'Datos de la Publicación: {id} - (GET)'
-        response_body['results'] = {}
+        response_body['results'] = row.serialize()
         return response_body, 200
     if request.method == 'PUT':
+        data = request.json
+        row.title = data.get('title')
+        row.description = data.get('description')
+        row.body = data.get('body')
+        row.date = datetime.now()
+        row.image_url = data.get('image_url')
+        row.user_id = data.get('user_id')
+        db.session.commit()
         response_body['message'] = f'Publicación: {id} modificada - (PUT)'
-        response_body['results'] = {}
+        response_body['results'] = row.serialize()
         return response_body, 200
     if request.method == 'DELETE':
-
+        db.session.delete(row)
+        db.session.commit()
         response_body['message'] = f'Publicación: {id} eliminada - (DELETE)'
         response_body['results'] = {}
         return response_body, 200
 
-@api.route('/medias', methods=['GET', 'POST'])
-@api.route('/medias/<int:id>', methods=['GET', 'PUT', 'DELETE'])
+# quiero ver todos los seguidores de todos los usuarios
+#@api.route('/follower', methods=['GET'])
 
-@api.route('/comments', methods=['GET', 'POST'])
-def comments():
+#quiero ver todos los followers de un usuario
+#@api.route('/users/<int: id>/followers', methods=['GET']) #no lleva un post
+
+#quiero ver todos los following de un usuario
+#@api.route('/users/<int: id>/following', methods=['GET'])
+
+#quiero ver todos los comentarios de un post
+#@api.route('/posts/<int: id>/comments'), methods=['GET']
+
+#quiero ver todos los comentarios de un usario
+#@api.route('/users/<int: id>/comments', methods=['GET'])
+
+@api.route('/temp', methods=['GET'])
+def temp():
     response_body = {}
-    if request.method == 'GET':
-        rows = db.session.execute(db.select(comments)).scalars()
-        result = [row.serialize() for row in rows]
-        response_body['message'] = 'listado de mensajes (GET)'
-        response_body['results'] = result
-@api.route('/comments/<int:id>', methods=['GET', 'PUT', 'DELETE'])
-
-@api.route('/followers', methods=['GET', 'POST'])
-@api.route('/followers/<int:id>', methods=['GET', 'PUT', 'DELETE'])
-
-@api.route('/following', methods=['GET', 'POST'])
-@api.route('/following/<int:id>', methods=['GET', 'PUT', 'DELETE'])
-
-@api.route('/planets', methods=['GET', 'POST'])
-@api.route('/planets/<int:id>', methods=['GET', 'PUT', 'DELETE'])
-
-@api.route('/characters', methods=['GET', 'POST'])
-@api.route('/characters/<int:id>', methods=['GET', 'PUT', 'DELETE'])
-
-@api.route('/character-favorites', methods=['GET', 'POST'])
-@api.route('/character-favorites/<int:id>', methods=['GET', 'PUT', 'DELETE'])
-
-@api.route('/planet-favorites', methods=['GET', 'POST'])
-@api.route('/planet-favorites/<int:id>', methods=['GET', 'PUT', 'DELETE'])
+    url = 'https://swapi.tech/api/planets/4'
+    response = requests.get(url)
+    print(response)
+    if response.status_code == 200:
+        data = response.json()
+        print(data)
+        response_body['results'] = data
+    return response_body, 200
