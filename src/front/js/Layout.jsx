@@ -8,9 +8,12 @@ import { Navbar } from "./component/Navbar.jsx";
 import { Footer } from "./component/Footer.jsx";
 // Custome Page / views
 import { Home } from "./pages/Home.jsx";
-import { Demo } from "./pages/Demo.jsx";
-import { Single } from "./pages/Single.jsx";
-
+import { Contacts } from "./pages/Contacts.jsx";
+import { ContactForm } from "./pages/ContactForm.jsx";
+import { EditContact } from "./pages/EditContact.jsx";
+import { Characters } from "./pages/Characters.jsx";
+import { Vehicles } from "./pages/Vehicles.jsx";
+import { Planets } from "./pages/Planets.jsx";
 
 //Create your first component
 const Layout = () => {
@@ -20,15 +23,19 @@ const Layout = () => {
     if (!process.env.BACKEND_URL || process.env.BACKEND_URL == "") return <BackendURL/ >;
 
     return (
-        <div>
+        <div className="d-flex flex-column min-vh-100">
             <BrowserRouter basename={basename}>
                 <ScrollToTop>
-                    <Navbar />
+                    <Navbar />                  
                     <Routes>
                         <Route element={<Home />} path="/" />
-                        <Route element={<Demo />} path="/demo" />
-                        <Route element={<Single />} path="/single/:theid" />
-                        <Route element={<h1>Not found!</h1>} path='*' />
+                        <Route element={<Contacts />} path="/contacts" />
+                        <Route element={<ContactForm />} path="/contact-form" />
+                        <Route element={<EditContact />} path="/edit-contact" />
+                        <Route element={<Characters />} path="/characters" />
+                        <Route element={<Vehicles />} path="/vehicles" />
+                        <Route element={<Planets />} path="/planets" />
+                        <Route element={<h1>Not found!</h1>} />         
                     </Routes>
                     <Footer />
                 </ScrollToTop>
