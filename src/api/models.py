@@ -27,7 +27,7 @@ class Users(db.Model):
                 'first_name': self.first_name,
                 'last_name': self.last_name,
                 'posts': [row.serialize() for row in self.posts_to]}
-
+    
 
 class Posts(db.Model):
     id = db.Column(db.Integer, primary_key=True)
