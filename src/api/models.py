@@ -28,6 +28,12 @@ class Users(db.Model):
                 'last_name': self.last_name,
                 'posts': [row.serialize() for row in self.posts_to]}
     
+    def single_serialize(self):
+        return {'id': self.id,
+                'email': self.email,
+                'first_name': self.firs_name,
+                'last_name': self.last_name}
+
 
 class Posts(db.Model):
     id = db.Column(db.Integer, primary_key=True)
