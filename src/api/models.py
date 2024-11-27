@@ -190,3 +190,4 @@ class Planets(db.Model):
                 'population': self.population,
                 'climate': self.climate,
                 'terrain': self.terrain}
+    

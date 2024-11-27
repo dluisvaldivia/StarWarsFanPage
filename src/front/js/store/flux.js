@@ -11,23 +11,69 @@ const getState = ({ getStore, getActions, setStore }) => {
 		vehicles: [],
 		planets: [],
 		favorites: [],
-		slug: "Danny"
+		user: {},
+		isLogged: false,
 	  },
 	  actions: {
-		getContacts: async (slug) => {
-		  const uri = `${getStore().host}/Danny`
+
+		login: async (dataToSend) => {
+			const uri = `${process.env.BACKEND_URL}/api/login`;
+			const options = {
+				method: 'POST',
+				headers: {'Content-Type': 'application/json'},
+				body: JSON.stringify(dataToSend)}
+			const response = await fetch(uri, options);
+			if (!response.ok) {
+				console.log('Error', response.status, response.statusText);
+				return;
+			}
+			const data = await response.json()
+			console.log(data)
+			localStorage.setItem('token', data.access_token)
+			localStorage.setItem('user', JSON.stringify(data.results))
+			setStore({ isLogged: true, user: data.results.email})
+		},
+
+		logout: () => {
+			setStore({ isLoged: false, user: '' });
+			localStorage.removeItem('token')
+			localStorage.removeItem('user')
+		},
+
+		isLogged: () => {
+			const token = localStorage.getItem('token')
+			if (token) {
+				// recuperamos el usuario
+				const userData = JSON.parse(localStorage.getItem('user'));
+				console.log(userData)
+				setStore({ isLogged: true, user: userData.email})}},
+
+		accessProtected: async () => {
+			const token = localStorage.getItem('token')
+			const uri = `${process.env.BACKEND_URL}/api/protected`;
+			const options = {
+				method: 'GET',
+				headers: {	"Content-Type": "application/json",
+							"Authorization": `Bearer ${token}`}};
+				const response = await fetch(uri, options);
+				if (!response.ok) {
+					console.log('error', response.status, response.statusText);
+					return}
+				const data = await response.json();
+				console.log(data);},
+			
+		getContacts: async (user) => {
+		  const uri = `${getStore().host}/${getStore().user}`
 		  const options = {
 			method: "GET",
-			headers: { 'Content-Type': 'application/json' },
-		  }
+			headers: { 'Content-Type': 'application/json' },}
 		  const response = await fetch(uri, options);
 		  if (!response.ok) {
 			console.log("Error: ", response.status, response.statusText);
-			return false;
-		  }
+			return false;}
 		  const data = await response.json()
 		  console.log(data)
-		  setStore({ agenda: slug, username: slug, contacts: data.contacts })
+		  setStore({ agenda: user, username: user, contacts: data.contacts })
 		},
   
 		postContact: async ({ dataToSend }) => {
@@ -106,9 +152,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 		  setStore({ planets: data.results })
 		},
 		addToFavorites: (item) => {
-		  const store = getStore();
-		  if (!store.favorites.find(fav => fav.uid === item.uid && fav.type === item.type)) {
-			setStore({ favorites: [...store.favorites, item] });
+		  /* const store = getStore(); */
+		  if (!getStore().favorites.find(fav => fav.uid === item.uid && fav.type === item.type)) {
+			setStore({ favorites: [...getStore().favorites, item] });
 		  }
 		},
 		removeFromFavorites: (item) => {

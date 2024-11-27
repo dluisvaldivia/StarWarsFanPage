@@ -1,25 +1,16 @@
-"""
-This module takes care of starting the API Server, Loading the DB and Adding the endpoints
-"""
 from flask import Flask, request, jsonify, url_for, Blueprint
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from datetime import datetime
-from api.models import db, Users, Posts, Followers
+from api.models import db, Users, Posts, Characters, Planets
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 import requests
 
+
 api = Blueprint('api', __name__)
 CORS(api)  # Allow CORS requests to this API
-
-
-@api.route('/hello', methods=['POST', 'GET'])
-def handle_hello():
-    response_body = {}
-    response_body['message'] = "Hello! I'm a message that came from the backend"
-    return response_body, 200
 
 
 @api.route("/login", methods=["POST"])
@@ -27,14 +18,16 @@ def login():
     response_body = {}
     data = request.json
     email = data.get("email", None)
-    password = data.get("password", None)
-    user = db.session.execute(db.select(Users).where(Users.email == email, Users.password == password, Users.is_active)).scalars()
-    if email != "test" or password != "test":
-        response_body['message'] = "Bad email or password"
+    password = request.json.get("password", None)
+    user = db.session.execute(db.select(Users).where(Users.email == email, Users.password == password, Users.is_active)).scalar()
+    if not user:
+        response_body['message'] = 'Bad email or password'
         return response_body, 401
-    access_token = create_access_token(identity={'email': user.email, 'user_id': user.id})
-    response_body['message'] = f'bienvenido {email}'
+    print('************ Valor de user *************:', user.serialize())
+    access_token = create_access_token(identity={'email': user.email, 'user_id': user.id, 'is_admin': user.is_admin})
+    response_body['message'] = f'Bienvenido {email}'
     response_body['access_token'] = access_token
+    response_body['results'] = user.serialize()
     return response_body, 200
 
 
@@ -76,7 +69,7 @@ def posts():
                     body = data.get('body'),
                     date = datetime.now(),
                     image_url = data.get('image_url'),
-                    user_id = data.get('user_id'))
+                    user_id = data.get('user_id'),)
         db.session.add(row)
         db.session.commit()
         response_body['message'] = 'Creando una Publicación (POST)'
@@ -90,21 +83,28 @@ def post(id):
     response_body = {}
     row = db.session.execute(db.select(Posts).where(Posts.id == id)).scalar()
     if not row:
-        response_body['message'] = f'La publicacion: {id} no existe'
+        response_body['message'] = f'La Publicación: {id} no existe'
         response_body['results'] = {}
         return response_body, 404
+    current_user = get_jwt_identity()
+    if row.user_id != current_user['user_id']:
+        response_body['message'] = f'Usted no puede gestionar la publicación: {id}'
+        response_body['results'] = {}
+        return response_body, 403
     if request.method == 'GET':
-        response_body['message'] = f'Datos de la Publicación: {id} - (GET)'
+        response_body['message'] = f'Datos de la Publicación: {id}'
         response_body['results'] = row.serialize()
         return response_body, 200
     if request.method == 'PUT':
         data = request.json
+        print(data)
+        # Validad que reciba todas las claves en body (json)
+        # Asigno las claves del json a la columna correspondiente
         row.title = data.get('title')
         row.description = data.get('description')
         row.body = data.get('body')
         row.date = datetime.now()
         row.image_url = data.get('image_url')
-        row.user_id = data.get('user_id')
         db.session.commit()
         response_body['message'] = f'Publicación: {id} modificada - (PUT)'
         response_body['results'] = row.serialize()
@@ -116,37 +116,96 @@ def post(id):
         response_body['results'] = {}
         return response_body, 200
 
-# quiero ver todos los seguidores de todos los usuarios
-#@api.route('/follower', methods=['GET'])
-
-#quiero ver todos los followers de un usuario
-#@api.route('/users/<int:id>/followers', methods=['GET']) #no lleva un post
-    
-
-#quiero ver todos los following de un usuario
-#@api.route('/users/<int: id>/following', methods=['GET'])
-
-#quiero ver todos los comentarios de un post
-@api.route('/posts/<int:id>/comments', methods=['GET'])
-def comments(id):
-    row = db.session.execute(db.select(Comments).where(Comments == {id})).scalar()
-    response_body = {}
-    response_body['message'] = "lista de comentarios"
-    response_body['results'] = row.serialize()
-    return response_body, 200
-
-
-#quiero ver todos los comentarios de un usario
-#@api.route('/users/<int: id>/comments', methods=['GET'])
 
 @api.route('/temp', methods=['GET'])
 def temp():
     response_body = {}
-    url = 'https://www.swapi.tech/api/people/'
+    url = 'https://jsonplaceholder.typicode.com/users'
     response = requests.get(url)
     print(response)
     if response.status_code == 200:
         data = response.json()
-        print(data)
+        for row in data:
+            print(row)
+            user = Users(email=row['email'],
+                         firs_name=row['name'],
+                         last_name=row['username'],
+                         password='1234',
+                         is_active=True,
+                         is_admin=False)
+            db.session.add(user)
+            db.session.commit()
         response_body['results'] = data
     return response_body, 200
+
+
+# STAR WARS API
+@api.route('/characters', methods=['GET'])
+def characters():
+    characters = Characters.query.all()
+    characters_list = []
+
+    for character in characters:
+        character_data = {
+                'id': character.id,
+                'name': character.name,
+                'height': character.height,
+                'mass': character.mass,
+                'hair_color': character.hair_color,
+                'skin_color': character.skin_color,
+                'eye_color': character.eye_color,
+                'birth_year': character.birth_year,
+                'gender': character.gender
+        }
+    characters_list.append(character_data)
+    return jsonify(characters_list)
+
+
+@api.route('/characters', methods=['POST'])
+def add_characters():
+    data = request.get_json()
+    new_character = Characters(
+        name = data['name'],
+        height = data['height'],
+        mass = data['mass'],
+        hair_color = data['hair_color'],
+        skin_color = data['skin_color'],
+        eye_color = data['eye_color'],
+        birth_year = data['birth_year'],
+        gender = data['gender']
+    )
+    db.session.add(new_character)
+    db.session.commit()
+    return jsonify({
+        'name': new_character.name,
+        'height': new_character.height,
+        'mass': new_character.mass,
+        'hair_color': new_character.hair_color,
+        'skin_color': new_character.skin_color,
+        'eye_color': new_character.eye_color,
+        'birth_year': new_character.birth_year,
+        'gender': new_character.gender
+    }), 201
+
+
+@api.route('/planets', methods=['GET'])
+def planets(): 
+    planets = Planets.query.all()
+    planets_list = []
+
+    for planet in planets:
+        planet_data ={
+            'id': planet.id,
+            'name': planet.name,
+            'climate': planet.climate,
+            'terrain': planet.terrain,
+            'residents': []            
+        }
+    planets_list.append(planet_data)
+    return jsonify(planets_list)
+
+
+
+
+
+

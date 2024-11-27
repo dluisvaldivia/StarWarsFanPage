@@ -1,9 +1,15 @@
 import React, { useContext } from "react";
 import { Context } from "../store/appContext.js";
 import { Link } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 export const Navbar = () => {
 	const { store, actions } = useContext(Context);
+
+	const handleLogin = () => {	
+		if (store.isLogged) {actions.logout();} 
+		else {Navigate('/login');}}
+
 
 	return (
 		<nav className="navbar bg-gradient bg-dark ">
@@ -28,6 +34,11 @@ export const Navbar = () => {
 					</Link>
 					<Link to="/contacts">
 						<button className="btn btn-info bg-gradient me-2" type="button">Contacts</button>
+					</Link>
+					<Link to="/login">
+						<button className="btn btn-info bg-danger me-2" onClick={handleLogin} type="button">
+						{store.isLogged ? 'Logout': 'Login'}
+						</button>
 					</Link>
 				</div>
 				<div className="dropdown">

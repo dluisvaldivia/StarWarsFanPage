@@ -28,7 +28,8 @@ const injectContext = PassedComponent => {
 		 * store, instead use actions, like this:
 		 **/
 		useEffect(() => {
-			state.actions.getContacts();
+			/* state.actions.getContacts(); */
+			state.actions.isLogged();
 			state.actions.getCharacters();
 			state.actions.getVehicles();
 			state.actions.getPlanets()
