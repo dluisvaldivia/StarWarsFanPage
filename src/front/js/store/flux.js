@@ -42,7 +42,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 		},
 
 
-
 		login: async (dataToSend) => {
 			const uri = `${process.env.BACKEND_URL}/api/login`;
 			const options = {
@@ -52,14 +51,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 			const response = await fetch(uri, options);
 			if (!response.ok) {
 				console.log('Error', response.status, response.statusText);
-				return false
+				return
 			}
 			const data = await response.json()
 			console.log(data)
 			localStorage.setItem('token', data.access_token)
 			localStorage.setItem('user', JSON.stringify(data.results))
 			setStore({ isLogged: true, user: data.results.email})
-			return true
+			return
 		},
 
 

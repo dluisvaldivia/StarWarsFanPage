@@ -10,20 +10,25 @@ export const Login = () => {
   const [password, setPassword] = useState('');
   const [hidePassword, setHidePassword] = useState(true);
   const navigate = useNavigate();
-
-
-  const handleSubmit = (event) => {
+  
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const dataToSend = { email, password }
-    console.log(dataToSend);
-    actions.login(dataToSend);
-    if (store.isLogged){
-      navigate("/characters");
+
+    try {
+      await actions.login(dataToSend);
+    
+    if (!store.isLogged){
+      alert("login failed!")
+      navigate("/login");
     }
     else{
-      navigate("/login")
-    }
-  }
+      navigate("/characters")
+    }} 
+    catch (error){
+      console.error("Error:", error);
+      alert("an error occurred! please try again")
+    }}
 
 
 return(
