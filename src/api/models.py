@@ -10,10 +10,10 @@ class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(20), unique=False, nullable=False)
-    is_active = db.Column(db.Boolean(), unique=False, nullable=False)
-    is_admin = db.Column(db.Boolean(), unique=False, nullable=False)
-    first_name = db.Column(db.String(), unique=False, nullable=True)
-    last_name = db.Column(db.String(), unique=False, nullable=True)
+    is_active = db.Column(db.Boolean(), unique=False, nullable=False, default=True)
+    is_admin = db.Column(db.Boolean(), unique=False, nullable=False, default=False)
+    first_name = db.Column(db.String(), unique=False, nullable=True, default="")
+    last_name = db.Column(db.String(), unique=False, nullable=True, default="")
 
     def __repr__(self):
         return f'<User: {self.id} - {self.email}>'
@@ -31,7 +31,7 @@ class Users(db.Model):
     def single_serialize(self):
         return {'id': self.id,
                 'email': self.email,
-                'first_name': self.firs_name,
+                'first_name': self.first_name,
                 'last_name': self.last_name}
 
 

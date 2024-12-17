@@ -9,18 +9,20 @@ export const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [hidePassword, setHidePassword] = useState(true);
-  
- /*  const navigate = useNavigate();
- */
-  const handleEmail = (event) => setEmail(event.target.value)
-  const handlePassword = (event) => setPassword(event.target.value)
+  const navigate = useNavigate();
+
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const dataToSend = { email, password }
     console.log(dataToSend);
     actions.login(dataToSend);
-    /* navigate('/dashboard') */
+    if (store.isLogged){
+      navigate("/characters");
+    }
+    else{
+      navigate("/login")
+    }
   }
 
 
@@ -31,13 +33,13 @@ return(
       <h1 className="pb-3">Login</h1>
         <div className="mb-3">
           <label htmlFor="email" className="form-label">Email address</label>
-          <input type="email" className="form-control" id="email" aria-describedby="emailHelp" value={email} onChange={handleEmail} />
+          <input type="email" className="form-control" id="email" aria-describedby="emailHelp" value={email} onChange={(e) => setEmail(e.target.value)} />
         <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div>
       </div>
 
         <div className="mb-3">
           <label htmlFor="password" className="form-label">Password</label>
-          <input type={hidePassword ? "password" : "text" } className="form-control" id="password" value={password} onChange={handlePassword}/>
+          <input type={hidePassword ? "password" : "text" } className="form-control" id="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
           <span onClick={() => setHidePassword(!hidePassword)} className="input-group-text">
                 {hidePassword ? <i className="far fa-eye"></i> : <i className="far fa-eye-slash"></i>}
               </span>
@@ -45,7 +47,7 @@ return(
           <button type="submit" className="btn btn-info">Login</button>
     </form>
       <div>
-        <h6 className="pt-3">Not a member? <Link to="/sign-up">Register</Link> </h6>
+        <h6 className="pt-3">Not a member? <Link to="/signup">Register</Link> </h6>
       </div>
     </div>
   </div>

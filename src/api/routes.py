@@ -31,6 +31,26 @@ def login():
     return response_body, 200
 
 
+@api.route("/signup", methods=["POST"])
+def signup():
+    data = request.json
+    email = data.get('email', None)
+    password = data.get('password', None)
+
+    if not email or not password:
+        return jsonify({"Missing signup fields"}), 400
+    
+    existing_user = Users.query.filter_by(email=email).first()
+    if existing_user:
+        return jsonify({'Email Already in use'}), 409
+
+    new_user = Users(email=email, password=password)
+    db.session.add(new_user)
+    db.session.commit()
+
+    return jsonify('User Created Successfully', 'User ID:', new_user.email), 201
+
+
 @api.route("/protected", methods=["GET"])
 @jwt_required()
 def protected():
