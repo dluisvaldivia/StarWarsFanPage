@@ -23,7 +23,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				headers: {'Content-Type': 'application/json'},
 				body: JSON.stringify(dataToSend)};
 			try{
-				const response = await fetch(uri, optoions);
+				const response = await fetch(uri, options);
 
 				if (!response.ok) {
 					console.log('Error', response.status)

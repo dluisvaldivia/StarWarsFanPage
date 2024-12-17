@@ -1,4 +1,4 @@
-import React, { useState, useContext, useActionState } from "react";
+import React, { useState, useContext } from "react";
 import { Context } from "../store/appContext.js";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -6,14 +6,13 @@ import getState from "../store/flux.js";
 
 
 export const SignUp = () => {
-
+  const { store, actions } = useContext(Context);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
   const navigate = useNavigate();
-  const signup = getState().actions;
 
-
+  
 const handleSubmit = async (event) => {
   event.preventDefault();
 
@@ -21,7 +20,8 @@ const handleSubmit = async (event) => {
   alert('Passwords do not match');
   return false }
 
- const dataToSend = { email, password }
+ const dataToSend = { "email": email,"password": password }
+ 
  console.log("this is being sent:", dataToSend);
 
   try {
@@ -38,7 +38,7 @@ const handleSubmit = async (event) => {
         alert(errorData.error)
         return}
 
-      const result = await signup(dataToSend)
+      const result = await response.json()
       console.log('User created!', result)
       navigate('/login');
 }
