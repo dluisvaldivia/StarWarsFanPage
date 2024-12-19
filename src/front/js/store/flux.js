@@ -63,7 +63,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 
 		logout: () => {
-			setStore({ isLoged: false, user: '' });
+			setStore({ isLogged: false, user: '' });
 			localStorage.removeItem('token')
 			localStorage.removeItem('user')
 		},
