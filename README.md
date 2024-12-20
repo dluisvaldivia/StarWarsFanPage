@@ -1,6 +1,6 @@
 Star Wars fan page
 ------------------
-![signup](//imgur.com/a/9EB6lk1.gif)
+![signup](https://i.imgur.com/6jroFYr.gif)
 
 features:
 - user creation
